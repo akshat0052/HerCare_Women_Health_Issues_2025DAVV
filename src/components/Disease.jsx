@@ -1,5 +1,6 @@
 import { DiseaseDetails } from './DiseaseDetails'
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 
 export default function Disease() {
 
@@ -22,7 +23,7 @@ export default function Disease() {
 
           result.map((data, index) => (
             <div key={index}>
-
+                <Link to={`/detailpage/${data.slug}`}>
               <div className='h-[23rem] w-[23rem] border border-pink-300  rounded-md object-cover transform transition duration-500 hover:scale-105 hover:brightness-90 hover:shadow-xl'>
 
                 <img src={data.image} alt={data.title} />
@@ -30,7 +31,7 @@ export default function Disease() {
                 <p className='m-3 text-gray-800'>{data.description}</p>
 
               </div>
-
+</Link>
             </div>
           ))
         ) :

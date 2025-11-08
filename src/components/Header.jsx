@@ -15,8 +15,8 @@ export default function Header() {
                 className='ml-[-1rem] mt-[-1rem] h-[2.5rem] w-[9rem] ' />
             </Link>
             <Link to="/" className='hover:text-pink-600 transition ml-[-1rem]'>Home</Link>
-            <Link to="/about" className='hover:text-pink-600 transition'>About</Link>
-            <Link to="/shop" className='hover:text-pink-600 transition'>Shop</Link>
+            <Link to="/about" className='hover:text-pink-600 transition'>ChatBot</Link>
+            <Link to="/disease" className='hover:text-pink-600 transition'>Disease</Link>
             <Link to="/tips" className='hover:text-pink-600 transition'>Health Tips</Link>
             <Link to="/login" className='hover:text-pink-600 transition'>Login</Link>
           </nav>

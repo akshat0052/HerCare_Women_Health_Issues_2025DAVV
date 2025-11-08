@@ -3,6 +3,8 @@ import './App.css'
 import Disease from './components/Disease'
 import Header from './components/Header'
 import Loginpage from './components/Loginpage'
+import Chatbot from './components/chatbot'
+import DetailPage from './components/detailpage'
 
 function App() {
   
@@ -17,9 +19,10 @@ function App() {
         <Routes>
           <Route path='/' element={<Disease/>} />
           <Route path='/Login' element={<Loginpage />} />
-          <Route path="/about" element={<h1>About Page</h1>} />
-        <Route path="/shop" element={<h1>Shop Page</h1>} />
+          <Route path="/about" element={<h1><Chatbot/></h1>} />
+        <Route path="/Disease" element={<Disease/>} />
         <Route path="/tips" element={<h1>Health Tips Page</h1>} />
+         <Route path="/detailpage/:slug" element={<DetailPage/>} />
         </Routes>
       </Router>
     </>
