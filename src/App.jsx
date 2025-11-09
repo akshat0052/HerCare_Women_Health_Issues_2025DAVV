@@ -5,6 +5,7 @@ import Header from './components/Header'
 import Loginpage from './components/Loginpage'
 import Chatbot from './components/chatbot'
 import DetailPage from './components/detailpage'
+import Home from './components/home'
 
 function App() {
   
@@ -17,7 +18,7 @@ function App() {
         <Header/>
 
         <Routes>
-          <Route path='/' element={<Disease/>} />
+          <Route path='/' element={<Home/>} />
           <Route path='/Login' element={<Loginpage />} />
           <Route path="/about" element={<h1><Chatbot/></h1>} />
         <Route path="/Disease" element={<Disease/>} />
