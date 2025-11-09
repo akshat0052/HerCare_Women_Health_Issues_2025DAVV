@@ -6,6 +6,7 @@ import Loginpage from './components/Loginpage'
 import Chatbot from './components/chatbot'
 import DetailPage from './components/detailpage'
 import Home from './components/home'
+import PeriodTracker from './components/PeriodTracker'
 
 function App() {
   
@@ -22,7 +23,7 @@ function App() {
           <Route path='/Login' element={<Loginpage />} />
           <Route path="/about" element={<h1><Chatbot/></h1>} />
         <Route path="/Disease" element={<Disease/>} />
-        <Route path="/tips" element={<h1>Health Tips Page</h1>} />
+        <Route path="/PeriodTracker" element={<PeriodTracker/>} />
          <Route path="/detailpage/:slug" element={<DetailPage/>} />
         </Routes>
       </Router>
