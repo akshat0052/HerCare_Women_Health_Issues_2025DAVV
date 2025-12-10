@@ -25,14 +25,14 @@ export default function Chatbot() {
   const askQuestion = async () => {
     if (!Question.trim()) return;
 
-    // Add user message to chat
+    // user message
     const userMessage = { type: "user", text: Question };
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
     setQuestion("");
 
     try {
-      // Build chat history for better context
+      // chat history
       const history = messages.map(m => ({
         role: m.type === "user" ? "user" : "model",
         parts: [{ text: m.text }]
@@ -92,7 +92,7 @@ export default function Chatbot() {
   }
 
   return (
-    <div className="flex flex-col bg-white rounded-2xl shadow-xl ml-[25rem] m-[3rem] mt-[9rem] h-[28rem] w-[40rem]">
+    <div className="flex flex-col bg-white rounded-2xl shadow-xl ml-[19rem] m-[3rem] mt-[8rem] h-[28rem] w-[50rem]">
       <div className="bg-pink-500 text-white py-3 text-center rounded-t-2xl font-semibold">
         Women Health Chatbot 💬
       </div>
