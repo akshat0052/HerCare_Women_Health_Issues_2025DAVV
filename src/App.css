@@ -3,4 +3,49 @@
 body {
   font-family: 'Roboto', sans-serif;
   background-color:#FFF0F6;
+  background-image: url("/assets/3682759.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Hide Google Translate banner and branding */
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide the translate element but keep it functional */
+.hidden-translate {
+  position: fixed;
+  top: 100px;
+  right: 10px;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Make the select visible for functionality */
+.hidden-translate .goog-te-combo {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Hide the Google Translate bar at top */
+.skiptranslate {
+  display: none !important;
+}
+
+iframe.skiptranslate {
+  display: none !important;
 }

@@ -22,12 +22,19 @@ export default function DetailPage() {
                             className="mx-auto mt-5 w-[400px] rounded-lg shadow-lg mr-[4rem]"
                         />
                     </div>
-                    <div>
-                        <p className="mt-4 text-gray-700 text-lg mx-auto max-w-2xl">
+                    <div className="">
+                        <p className=" mt-[5rem] text-left text-gray-900 text-2xl mx-auto max-w-2xl">
+                            {disease.description}
+                        </p>
+                        
+                    </div>
+                    
+                </div>
+                <div>
+                       <p className="mt-[2.5rem] text-left text-gray-700 text-lg ">
                             {disease.para}
                         </p>
                     </div>
-                </div>
             </div></>
     );
 }

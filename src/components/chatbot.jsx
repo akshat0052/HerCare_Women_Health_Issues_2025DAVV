@@ -3,53 +3,129 @@ import { URL } from "./api";
 
 export default function Chatbot() {
 
-  const [Question, setQuestion] = useState("");
+  const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+
   const scrollRef = useRef(null);
   const abortRef = useRef(null);
 
+  // Speech refs
+  const recognitionRef = useRef(null);
+  const listeningRef = useRef(false);
+
   const suggestions = [
-    "What are common menopause symptoms?",
+    "Common menopause symptoms?",
     "How to manage anxiety naturally?",
-    "Early signs of PCOS and what to do?",
-    "Tips for better sleep during periods"
+    "पीसीओएस शुरुआती लक्षण और ऐसे में क्या करें?",
+    "मासिक के दौरान बेहतर नींद के लिए सुझाव"
   ];
 
+  /* ================= Auto Scroll ================= */
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isLoading]);
 
-  const askQuestion = async () => {
-    if (!Question.trim()) return;
+  /* ================= Toggle Mic ================= */
+  const toggleVoiceInput = () => {
 
-    // user message
-    const userMessage = { type: "user", text: Question };
-    setMessages(prev => [...prev, userMessage]);
-    setIsLoading(true);
-    setQuestion("");
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Speech recognition not supported in this browser.");
+      return;
+    }
+
+    // If already listening, stop the current session
+    if (listeningRef.current && recognitionRef.current) {
+      recognitionRef.current.stop();
+      return;
+    }
+
+    // Create a fresh instance every time to avoid reuse issues
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    recognition.onstart = () => {
+      listeningRef.current = true;
+      setIsListening(true);
+    };
+
+    recognition.onend = () => {
+      listeningRef.current = false;
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognition.onresult = (event) => {
+      let text = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        text += event.results[i][0].transcript;
+      }
+      setQuestion(text);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech error:", event.error);
+      listeningRef.current = false;
+      setIsListening(false);
+      recognitionRef.current = null;
+      if (event.error === "not-allowed") {
+        alert("Please allow microphone permission in your browser settings.");
+      }
+    };
+
+    recognitionRef.current = recognition;
 
     try {
-      // chat history
+      recognition.start();
+    } catch (err) {
+      console.error("Start error:", err);
+    }
+  };
+
+  /* ================= Ask Question ================= */
+  const askQuestion = async (customText = null) => {
+
+    const text = customText || question;
+
+    if (!text.trim()) return;
+
+    const userMessage = {
+      type: "user",
+      text
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setQuestion("");
+    setIsLoading(true);
+
+    try {
+
       const history = messages.map(m => ({
         role: m.type === "user" ? "user" : "model",
         parts: [{ text: m.text }]
       }));
+
       const payload = {
         systemInstruction: {
           role: "system",
           parts: [{
             text:
-              "You are a women's health assistant. Respond concisely with: \n1) One-line summary, \n2) 4–6 bullet tips, \n3) Red flags (when to seek care), \n4) Short non-medical-advice disclaimer. \nKeep language clear and supportive; avoid diagnosing."
+              "You are a women's health assistant. Give summary, tips, red flags, disclaimer."
           }]
         },
         contents: [
           ...history,
           {
             role: "user",
-            parts: [{ text: userMessage.text }]
+            parts: [{ text }]
           }
         ]
       };
@@ -57,121 +133,186 @@ export default function Chatbot() {
       const controller = new AbortController();
       abortRef.current = controller;
 
-      const response = await fetch(URL, {
+      const res = await fetch(URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
         signal: controller.signal
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (!response.ok) {
-        const errText = data?.error?.message || "Request failed. Please try again.";
-        setMessages(prev => [...prev, { type: "ai", text: errText }]);
-        return;
-      }
+      if (!res.ok) throw new Error("Failed");
 
       const parts = data?.candidates?.[0]?.content?.parts || [];
-      const aiText = parts.map(p => p?.text).filter(Boolean).join("\n");
-      const finalText = aiText || "Sorry, I couldn't generate a response.";
 
-      const aiMessage = { type: "ai", text: finalText };
+      const aiText = parts
+        .map(p => p?.text)
+        .filter(Boolean)
+        .join("\n");
 
-      setMessages(prev => [...prev, aiMessage]);
-    } catch (error) {
-      console.error("Error:", error);
-      const message = error.name === 'AbortError' ? 'Stopped.' : "Sorry, something went wrong. Please try again.";
-      setMessages(prev => [...prev, { type: "ai", text: message }]);
+      setMessages(prev => [
+        ...prev,
+        {
+          type: "ai",
+          text: aiText || "No response."
+        }
+      ]);
+
+    } catch (err) {
+
+      console.error(err);
+
+      const msg =
+        err.name === "AbortError"
+          ? "Stopped."
+          : "Something went wrong.";
+
+      setMessages(prev => [
+        ...prev,
+        { type: "ai", text: msg }
+      ]);
+
     } finally {
       setIsLoading(false);
       abortRef.current = null;
     }
-  }
+  };
 
+  /* ================= UI ================= */
   return (
-    <div className="flex flex-col bg-white rounded-2xl shadow-xl ml-[19rem] m-[3rem] mt-[8rem] h-[28rem] w-[50rem]">
-      <div className="bg-pink-500 text-white py-3 text-center rounded-t-2xl font-semibold">
-        Women Health Chatbot 💬
-      </div>
+    <div className="min-h-screen pt-20 md:pt-24 pb-8 px-4">
+      <div className="flex flex-col bg-white rounded-2xl shadow-xl mx-auto max-w-3xl h-[70vh] md:h-[75vh]">
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
+        {/* Header */}
+        <div className="bg-pink-500 text-white py-3 text-center rounded-t-2xl font-semibold text-sm md:text-base">
+          Women Health Chatbot 💬
+        </div>
+
+      {/* Chat */}
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto p-4 space-y-3"
+      >
+
         {messages.length === 0 && (
           <div className="text-gray-500 text-center mt-8 space-y-3">
-            <div className="italic">Ask me anything about women's health, or try:</div>
+
+            <div className="italic">
+              Try asking:
+            </div>
+
             <div className="flex flex-wrap gap-2 justify-center">
+
               {suggestions.map((s, i) => (
                 <button
                   key={i}
-                  onClick={() => { setQuestion(s); setTimeout(askQuestion, 0); }}
-                  className="text-sm bg-pink-50 text-pink-700 border border-pink-200 px-3 py-1 rounded-full hover:bg-pink-100"
+                  onClick={() => askQuestion(s)}
+                  className="text-sm bg-pink-50 text-pink-700 border px-3 py-1 rounded-full hover:bg-pink-100"
                 >
                   {s}
                 </button>
               ))}
+
             </div>
           </div>
         )}
 
-        {messages.map((msg, index) => (
-          <div key={index} className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[80%] p-3 rounded-lg whitespace-pre-wrap ${msg.type === "user"
-                ? "bg-pink-500 text-white rounded-br-none"
-                : "bg-gray-100 text-gray-800 rounded-bl-none"
-              }`}>
+        {messages.map((msg, i) => (
+
+          <div
+            key={i}
+            className={`flex ${
+              msg.type === "user"
+                ? "justify-end"
+                : "justify-start"
+            }`}
+          >
+
+            <div
+              className={`max-w-[80%] p-3 rounded-lg whitespace-pre-wrap ${
+                msg.type === "user"
+                  ? "bg-pink-500 text-white rounded-br-none"
+                  : "bg-gray-100 text-gray-800 rounded-bl-none"
+              }`}
+            >
               {msg.text}
             </div>
+
           </div>
         ))}
 
         {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-gray-100 text-gray-500 p-3 rounded-lg rounded-bl-none italic">
-              Typing...
-            </div>
+          <div className="italic text-gray-400">
+            Typing...
           </div>
         )}
+
       </div>
 
+      {/* Input */}
       <div className="flex border-t p-3 gap-2">
-        <input
-          type="text"
-          value={Question}
-          onChange={(event) => setQuestion(event.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); askQuestion(); } }}
-          placeholder="Ask about women's health..."
-          className="flex-1 border rounded-full px-3 py-2 focus:outline-none"
+
+        {/* Mic */}
+        <button
+          onClick={toggleVoiceInput}
           disabled={isLoading}
+          className={`rounded-full px-3 py-2 ${
+            isListening
+              ? "bg-red-500 text-white animate-pulse"
+              : "bg-gray-100 hover:bg-gray-200"
+          }`}
+        >
+          🎤
+        </button>
+
+        {/* Text */}
+        <input
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              askQuestion();
+            }
+          }}
+          placeholder={
+            isListening
+              ? "Listening..."
+              : "Ask about women's health..."
+          }
+          disabled={isLoading}
+          className="flex-1 min-w-0 border rounded-full px-3 py-2 outline-none text-sm md:text-base"
         />
 
+        {/* Send */}
         {isLoading ? (
           <button
-            className="bg-gray-300 text-gray-700 rounded-full px-4 py-2 hover:bg-gray-400"
-            onClick={() => { if (abortRef.current) abortRef.current.abort(); }}
+            onClick={() => abortRef.current?.abort()}
+            className="bg-gray-300 px-3 md:px-4 py-2 rounded-full text-sm"
           >
             Stop
           </button>
         ) : (
           <button
-            className="bg-pink-500 text-white rounded-full px-4 py-2 hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={askQuestion}
-            disabled={!Question.trim()}
+            onClick={() => askQuestion()}
+            disabled={!question.trim()}
+            className="bg-pink-500 text-white px-3 md:px-4 py-2 rounded-full disabled:opacity-50 text-sm"
           >
             Send
           </button>
         )}
 
+        {/* Clear */}
         <button
-          className="ml-2 bg-white border border-gray-300 text-gray-700 rounded-full px-4 py-2 hover:bg-gray-50"
           onClick={() => setMessages([])}
           disabled={isLoading}
+          className="hidden sm:block border px-3 md:px-4 py-2 rounded-full text-sm"
         >
           Clear
         </button>
       </div>
     </div>
+    </div>
   );
 }
-

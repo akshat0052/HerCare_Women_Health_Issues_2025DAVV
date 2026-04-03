@@ -54,15 +54,15 @@ export default function PeriodTracker() {
   const fertileEnd = ovulation ? addDaysISO(ovulation, 3) : null;
 
   return (
-    <div className=" bg-gradient-to-br from-pink-50 to-rose-100 p-8 flex justify-center mt-[6.5rem]">
-      <div className="max-w-5xl w-full backdrop-blur-xl bg-white/60 shadow-2xl rounded-3xl p-6 border border-white/40">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-100 px-4 py-8 pt-24 md:pt-28">
+      <div className="max-w-5xl mx-auto backdrop-blur-xl bg-white/60 shadow-2xl rounded-3xl p-4 md:p-6 border border-white/40">
 
-        <h1 className="text-4xl font-bold mb-6 text-rose-600 text-center tracking-tight drop-shadow-sm">
-           Period Tracker
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 text-rose-600 text-center tracking-tight drop-shadow-sm">
+          Period Tracker
         </h1>
 
-        {/* Add Period Card */}
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+        {/* Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-8">
           <div className="bg-white shadow-xl rounded-3xl p-6 border border-rose-100 hover:shadow-2xl transition-all">
             <h2 className="text-xl font-semibold mb-4 text-rose-500">Add Period</h2>
 

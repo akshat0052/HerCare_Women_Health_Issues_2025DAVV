@@ -1,48 +1,66 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Loginpage() {
   return (
-    <>
-      <div className='flex items-center h-screen bg-cover bg-center overflow-hidden bg-fixed'
-       style={{ backgroundImage: "url('/assets/3682759.jpg')" }}>
+    <div className='min-h-screen flex items-center justify-center px-4 py-20 pt-24 md:pt-28'>
+      <div className='bg-white w-full max-w-sm md:max-w-md rounded-2xl shadow-xl p-6 md:p-8'>
+        
+        <h2 className='text-2xl md:text-3xl font-bold text-center text-pink-600 mb-6'>Welcome Back</h2>
+        
+        <div className='space-y-4'>
+          <div>
+            <label htmlFor="email" className='block text-gray-700 font-medium mb-1 text-sm md:text-base'>Email</label>
+            <input 
+              type="email" 
+              placeholder='Enter your email'
+              className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-300 focus:outline-none focus:border-pink-400 transition text-sm md:text-base' 
+            />
+          </div>
 
-        <div className='bg-white w-[25rem] h-[22rem] mt-[1rem] ml-[28rem] rounded-lg items-center justify-center flex'>
-          <div className=''>
-            <div>
-              <label htmlFor="email" className='block text-gray-700 font-medium mb-1'>Email</label>
+          <div>
+            <label htmlFor="Password" className='block text-gray-700 font-medium mb-1 text-sm md:text-base'>Password</label>
+            <input 
+              type="password" 
+              placeholder='*********'
+              className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-300 focus:outline-none focus:border-pink-400 transition text-sm md:text-base' 
+            />
+          </div>
 
-              <input type="email" placeholder='Enter your email'
-                className=' w-[20rem] mt-[0.3rem] mb-[1.5rem] px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-pink-300 focus:outline-none' />
+          <div className='text-right'>
+            <a href="#" className='text-pink-600 hover:text-pink-700 text-sm'>Forgot password?</a>
+          </div>
+
+          <button className='w-full py-2.5 md:py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-lg font-medium transition shadow-md text-sm md:text-base'>
+            Sign In
+          </button>
+
+          <div className='relative my-4'>
+            <div className='absolute inset-0 flex items-center'>
+              <div className='w-full border-t border-gray-300'></div>
             </div>
-
-            <div >
-              <label htmlFor="Password" className='block text-gray-700 font-medium mb-1'>Password</label>
-              <input type="password" placeholder='*********'
-                className='w-[20rem] mt-[0.3rem] mb-[1.5rem] px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-pink-300 focus:outline-none' />
-            </div>
-
-            <div className='mb-[0.5rem]'>
-              Forgot password
-            </div>
-
-            <div>
-              <button 
-              className='w-[20rem] h-[2.8rem] mb-[1.5rem] shadow-sm bg-white border border-gray-700 rounded-lg hover:bg-pink-400 transition focus:ring-2 focus:ring-pink-300'>
-                 <a href="">sign in</a>
-              </button>
-            </div>
-
-            <div className=''>
-              <button
-                className='w-[20rem] h-[2.8rem] flex justify-center items-center shadow-sm bg-white border border-gray-700 rounded-lg hover:bg-pink-400 transition focus:ring-2 focus:ring-pink-300'>
-                <img src="../assets/Google_logo-removebg-preview.png" alt="googlelogo"
-                  className='w-[2rem] h-[2rem] mr-[0.7rem]' />
-                sign in with Google
-              </button>
+            <div className='relative flex justify-center text-sm'>
+              <span className='px-2 bg-white text-gray-500'>or</span>
             </div>
           </div>
+
+          <button className='w-full py-2.5 md:py-3 flex justify-center items-center gap-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm md:text-base'>
+            <img 
+              src="../assets/Google_logo-removebg-preview.png" 
+              alt="Google"
+              className='w-5 h-5 md:w-6 md:h-6' 
+            />
+            Sign in with Google
+          </button>
+
+          <p className='text-center text-sm text-gray-500 mt-2'>
+            Don't have an account?{' '}
+            <Link to="/Register" className='text-pink-600 hover:text-pink-700 font-medium'>
+              Sign Up
+            </Link>
+          </p>
         </div>
       </div>
-    </>
+    </div>
   )
 }

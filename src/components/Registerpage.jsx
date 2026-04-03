@@ -1,0 +1,130 @@
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+
+export default function Registerpage() {
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
+  const [error, setError] = useState('')
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+    setError('')
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!form.name || !form.email || !form.password || !form.confirmPassword) {
+      setError('Please fill in all fields.')
+      return
+    }
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
+    // TODO: connect to backend register API
+    console.log('Register:', form)
+  }
+
+  return (
+    <div className='min-h-screen flex items-center justify-center px-4 py-20 pt-24 md:pt-28'>
+      <div className='bg-white w-full max-w-sm md:max-w-md rounded-2xl shadow-xl p-6 md:p-8'>
+
+        <h2 className='text-2xl md:text-3xl font-bold text-center text-pink-600 mb-6'>Create Account</h2>
+
+        <form onSubmit={handleSubmit} className='space-y-4'>
+
+          <div>
+            <label htmlFor="name" className='block text-gray-700 font-medium mb-1 text-sm md:text-base'>Full Name</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              value={form.name}
+              onChange={handleChange}
+              placeholder='Enter your full name'
+              className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-300 focus:outline-none focus:border-pink-400 transition text-sm md:text-base'
+            />
+          </div>
+
+          <div>
+            <label htmlFor="email" className='block text-gray-700 font-medium mb-1 text-sm md:text-base'>Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder='Enter your email'
+              className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-300 focus:outline-none focus:border-pink-400 transition text-sm md:text-base'
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className='block text-gray-700 font-medium mb-1 text-sm md:text-base'>Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder='Create a password'
+              className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-300 focus:outline-none focus:border-pink-400 transition text-sm md:text-base'
+            />
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword" className='block text-gray-700 font-medium mb-1 text-sm md:text-base'>Confirm Password</label>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              placeholder='Re-enter your password'
+              className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-300 focus:outline-none focus:border-pink-400 transition text-sm md:text-base'
+            />
+          </div>
+
+          {error && (
+            <p className='text-red-500 text-sm text-center'>{error}</p>
+          )}
+
+          <button
+            type="submit"
+            className='w-full py-2.5 md:py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-lg font-medium transition shadow-md text-sm md:text-base'
+          >
+            Sign Up
+          </button>
+
+          <div className='relative my-4'>
+            <div className='absolute inset-0 flex items-center'>
+              <div className='w-full border-t border-gray-300'></div>
+            </div>
+            <div className='relative flex justify-center text-sm'>
+              <span className='px-2 bg-white text-gray-500'>or</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className='w-full py-2.5 md:py-3 flex justify-center items-center gap-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm md:text-base'
+          >
+            <img
+              src="../assets/Google_logo-removebg-preview.png"
+              alt="Google"
+              className='w-5 h-5 md:w-6 md:h-6'
+            />
+            Sign up with Google
+          </button>
+
+          <p className='text-center text-sm text-gray-500 mt-2'>
+            Already have an account?{' '}
+            <Link to="/Login" className='text-pink-600 hover:text-pink-700 font-medium'>
+              Sign In
+            </Link>
+          </p>
+
+        </form>
+      </div>
+    </div>
+  )
+}
