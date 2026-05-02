@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mic Test</title>
+  <style>
+    body { font-family: sans-serif; padding: 24px; max-width: 600px; }
+    h2 { color: #e91e8c; }
+    .box { padding: 12px 16px; margin: 8px 0; border-radius: 8px; font-size: 14px; }
+    .ok   { background: #d4edda; color: #155724; }
+    .err  { background: #f8d7da; color: #721c24; }
+    .info { background: #fff3cd; color: #856404; }
+    .gray { background: #f0f0f0; color: #333; }
+    button { padding: 10px 24px; font-size: 15px; cursor: pointer; margin: 6px 4px;
+             border: none; border-radius: 8px; background: #e91e8c; color: white; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    #result { font-size: 22px; min-height: 50px; border: 2px solid #ddd;
+              border-radius: 8px; padding: 12px; margin-top: 8px; color: #222; }
+    #log { font-family: monospace; font-size: 13px; background: #f9f9f9;
+           border: 1px solid #ddd; border-radius: 8px; padding: 10px;
+           min-height: 80px; max-height: 200px; overflow-y: auto; }
+    .log-ok  { color: green; }
+    .log-err { color: red; }
+  </style>
+</head>
+<body>
+  <h2>🎤 Microphone Diagnostic</h2>
+  <p>Open this page at <strong>http://localhost:5173/mic-test.html</strong> in Chrome or Edge.</p>
+
+  <div id="s1" class="box gray">⏳ Checking browser support...</div>
+  <div id="s2" class="box gray">⏳ Checking mic permission...</div>
+
+  <br/>
+  <button id="btnTest">▶ Start Mic Test</button>
+  <button id="btnStop" disabled>⏹ Stop</button>
+
+  <h3>What you said:</h3>
+  <div id="result">— speak after clicking Start —</div>
+
+  <h3>Event Log:</h3>
+  <div id="log"></div>
+
+  <script>
+    function addLog(msg, type) {
+      const el = document.createElement('div');
+      el.textContent = new Date().toLocaleTimeString() + '  →  ' + msg;
+      el.className = type === 'ok' ? 'log-ok' : type === 'err' ? 'log-err' : '';
+      document.getElementById('log').prepend(el);
+    }
+
+    // 1. Check browser support
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const s1 = document.getElementById('s1');
+    if (SR) {
+      s1.textContent = '✅ Web Speech API is SUPPORTED';
+      s1.className = 'box ok';
+    } else {
+      s1.textContent = '❌ NOT SUPPORTED — Switch to Chrome or Edge browser';
+      s1.className = 'box err';
+      document.getElementById('btnTest').disabled = true;
+    }
+
+    // 2. Check permission
+    const s2 = document.getElementById('s2');
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: 'microphone' }).then(r => {
+        const map = {
+          granted: ['✅ Microphone permission: GRANTED', 'ok'],
+          denied:  ['🚫 Microphone permission: BLOCKED — Click 🔒 in address bar → Site settings → Microphone → Allow → Reload', 'err'],
+          prompt:  ['⚠️ Permission not asked yet — Click "Start Mic Test" and then click Allow in the popup', 'info'],
+        };
+        const [text, cls] = map[r.state] || ['❓ Permission state: ' + r.state, 'info'];
+        s2.textContent = text;
+        s2.className = 'box ' + cls;
+        r.onchange = () => location.reload();
+      }).catch(() => {
+        s2.textContent = '❓ Could not check permission';
+        s2.className = 'box info';
+      });
+    } else {
+      s2.textContent = '❓ Permissions API not available';
+      s2.className = 'box info';
+    }
+
+    // 3. Mic Test
+    let rec = null;
+
+    document.getElementById('btnTest').onclick = () => {
+      if (!SR) return;
+      addLog('Creating SpeechRecognition instance...');
+
+      rec = new SR();
+      rec.continuous = false;
+      rec.interimResults = true;
+      rec.lang = 'en-IN';
+
+      rec.onstart = () => {
+        addLog('onstart fired ✅ — SPEAK NOW', 'ok');
+        document.getElementById('btnTest').disabled = true;
+        document.getElementById('btnStop').disabled = false;
+      };
+
+      rec.onspeechstart = () => addLog('onspeechstart — mic detected your voice 🎙️', 'ok');
+
+      rec.onspeechend = () => addLog('onspeechend — stopped hearing voice');
+
+      rec.onresult = (e) => {
+        let text = '';
+        for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
+        document.getElementById('result').textContent = text;
+        addLog('onresult: "' + text + '"', 'ok');
+      };
+
+      rec.onnomatch = () => addLog('onnomatch — heard sound but could not recognise it', 'err');
+
+      rec.onerror = (e) => {
+        addLog('onerror: ' + e.error, 'err');
+        document.getElementById('btnTest').disabled = false;
+        document.getElementById('btnStop').disabled = true;
+      };
+
+      rec.onend = () => {
+        addLog('onend — recognition session finished');
+        document.getElementById('btnTest').disabled = false;
+        document.getElementById('btnStop').disabled = true;
+      };
+
+      try {
+        rec.start();
+        addLog('start() called...');
+      } catch (e) {
+        addLog('start() threw: ' + e.message, 'err');
+      }
+    };
+
+    document.getElementById('btnStop').onclick = () => {
+      if (rec) rec.stop();
+    };
+  </script>
+</body>
+</html>

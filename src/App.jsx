@@ -9,16 +9,25 @@ import DetailPage from "./components/detailpage";
 import Home from "./components/home";
 import PeriodTracker from "./components/PeriodTracker";
 import { useEffect } from "react";
+import Doctors from "./components/Doctor";
+import Diet from "./components/Diet";
+
 
 function App() {
+  
   useEffect(() => {
-    const addScript = document.createElement("script");
-    addScript.src =
+    if (window.googleTranslateLoaded) return;
+
+    window.googleTranslateLoaded = true;
+
+    const script = document.createElement("script");
+    script.src =
       "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-    addScript.async = true;
-    document.body.appendChild(addScript);
+    script.async = true;
 
     window.googleTranslateElementInit = () => {
+      if (!window.google?.translate) return;
+
       new window.google.translate.TranslateElement(
         {
           pageLanguage: "en",
@@ -29,6 +38,8 @@ function App() {
         "google_translate_element"
       );
     };
+
+    document.body.appendChild(script);
   }, []);
 
   return (
@@ -44,6 +55,8 @@ function App() {
           <Route path="/Register" element={<Registerpage />} />
           <Route path="/about" element={<Chatbot />} />
           <Route path="/Disease" element={<Disease />} />
+          <Route path="/Diet" element={<Diet />} />
+          <Route path="/Doctors" element={<Doctors />} />
           <Route path="/PeriodTracker" element={<PeriodTracker />} />
           <Route path="/detailpage/:slug" element={<DetailPage />} />
         </Routes>

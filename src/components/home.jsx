@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Disease from "./Disease";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
-
+  const navigate = useNavigate();
   useEffect(() => {
     AOS.init({ duration: 1200 });
   }, []);
@@ -36,21 +38,19 @@ export default function Home() {
             Discover trusted health information, awareness, and wellness tips designed specially for women.
           </p>
 
-          <button className="bg-pink-500 text-white px-8 py-3 rounded-full shadow-lg hover:shadow-pink-300 hover:scale-105 transition duration-300">
+          <button
+            onClick={() => navigate("/disease")}
+            className="bg-pink-500 text-white px-8 py-3 rounded-full shadow-lg hover:shadow-pink-300 hover:scale-105 transition duration-300">
             Explore Now
 
           </button>
 
         </div>
-
         {/* IMAGE */}
 
         <div className="mb-10 md:mb-0 relative" data-aos="fade-left">
 
-
-
           <div className="relative group">
-
             <img
 
               src="https://t4.ftcdn.net/jpg/07/27/56/21/360_F_727562179_kO4SXJ8KYrFumXiwgSHD7Yb2uSy7Gr8U.jpg"
@@ -60,15 +60,11 @@ export default function Home() {
               className="w-[400px] h-[400px] object-cover rounded-[40px] shadow-2xl transition-transform duration-500 group-hover:scale-105"
 
             />
-
             {/* overlay */}
 
             <div className="absolute inset-0 bg-pink-200 opacity-20 rounded-[40px]"></div>
 
           </div>
-
-
-
           {/* flowers */}
 
           <div className="absolute -top-6 -left-6 text-4xl animate-bounce">🌸</div>

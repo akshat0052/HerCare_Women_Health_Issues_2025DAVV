@@ -16,6 +16,8 @@ export default function Header() {
     { to: '/about', label: 'ChatBot' },
     { to: '/disease', label: 'Disease' },
     { to: '/PeriodTracker', label: 'Period Tracker' },
+    { to: '/Doctors', label: 'Doctors' },
+    { to: '/Diet', label: 'Diet' },
     { to: '/login', label: 'Login' },
   ];
 
@@ -66,22 +68,22 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3 md:py-4">
       <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-full shadow-md border border-pink-200 px-4 md:px-6 py-2 md:py-3 flex items-center justify-between">
-          
+
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
-            <img 
-              src="../assets/Screenshot 1.0.png" 
+            <img
+              src="../assets/Screenshot 1.0.png"
               alt="HerCare Logo"
-              className="h-8 md:h-10 w-auto mb-[10px] ml-[20px]" 
+              className="h-8 md:h-10 w-auto mb-[10px] ml-[20px]"
             />
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-gray-900 font-medium">
             {navLinks.map((link) => (
-              <Link 
-                key={link.to} 
-                to={link.to} 
+              <Link
+                key={link.to}
+                to={link.to}
                 className="hover:text-pink-600 transition text-sm xl:text-base"
               >
                 {link.label}
@@ -91,7 +93,7 @@ export default function Header() {
 
           {/* Right side - Language & Mobile Menu */}
           <div className="flex items-center gap-2 md:gap-3">
-            
+
             {/* Language Dropdown */}
             <div className="language-dropdown relative">
               <button
@@ -111,9 +113,8 @@ export default function Header() {
                     <button
                       key={lang.code}
                       onClick={() => changeLanguage(lang.code, lang.name)}
-                      className={`w-full px-3 md:px-4 py-2 text-left hover:bg-pink-50 flex items-center gap-2 text-sm ${
-                        currentLang === lang.name ? 'bg-pink-100 text-pink-600' : 'text-gray-700'
-                      }`}
+                      className={`w-full px-3 md:px-4 py-2 text-left hover:bg-pink-50 flex items-center gap-2 text-sm ${currentLang === lang.name ? 'bg-pink-100 text-pink-600' : 'text-gray-700'
+                        }`}
                     >
                       <span>{lang.flag}</span>
                       <span>{lang.name}</span>
