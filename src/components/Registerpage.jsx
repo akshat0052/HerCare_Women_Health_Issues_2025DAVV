@@ -1,16 +1,20 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext'
 
 export default function Registerpage() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
   const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { register, googleLogin } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
     setError('')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.name || !form.email || !form.password || !form.confirmPassword) {
       setError('Please fill in all fields.')
@@ -20,9 +24,30 @@ export default function Registerpage() {
       setError('Passwords do not match.')
       return
     }
-    // TODO: connect to backend register API
-    console.log('Register:', form)
+    try {
+      setIsSubmitting(true);
+      setError('');
+      await register(form.name, form.email, form.password);
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Registration failed');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
+
+  const handleGoogleLogin = async () => {
+    try {
+      setIsSubmitting(true);
+      setError('');
+      await googleLogin();
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Google Login failed');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className='min-h-screen flex items-center justify-center px-4 py-20 pt-24 md:pt-28'>
@@ -89,10 +114,11 @@ export default function Registerpage() {
           )}
 
           <button
+            disabled={isSubmitting}
             type="submit"
             className='w-full py-2.5 md:py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-lg font-medium transition shadow-md text-sm md:text-base'
           >
-            Sign Up
+            {isSubmitting ? 'Signing Up...' : 'Sign Up'}
           </button>
 
           <div className='relative my-4'>
@@ -106,6 +132,7 @@ export default function Registerpage() {
 
           <button
             type="button"
+            onClick={handleGoogleLogin}
             className='w-full py-2.5 md:py-3 flex justify-center items-center gap-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm md:text-base'
           >
             <img

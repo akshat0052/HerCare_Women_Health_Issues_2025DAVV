@@ -1,5 +1,6 @@
-// Premium UI version of Period Tracker
 import React, { useEffect, useState } from "react";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 export default function PeriodTracker() {
   const [periods, setPeriods] = useState([]);
@@ -8,6 +9,7 @@ export default function PeriodTracker() {
   const [avgCycle, setAvgCycle] = useState(28);
 
   useEffect(() => {
+    AOS.init({ duration: 800, once: true });
     const raw = localStorage.getItem("periods_v1");
     if (raw) {
       try { setPeriods(JSON.parse(raw)); } catch {}
@@ -54,60 +56,132 @@ export default function PeriodTracker() {
   const fertileEnd = ovulation ? addDaysISO(ovulation, 3) : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-100 px-4 py-8 pt-24 md:pt-28">
-      <div className="max-w-5xl mx-auto backdrop-blur-xl bg-white/60 shadow-2xl rounded-3xl p-4 md:p-6 border border-white/40">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-rose-100 via-pink-50 to-red-100 px-4 py-8 pt-28 pb-20 overflow-hidden text-gray-800">
+      
+      {/* Background Blobs */}
+      <div className="absolute top-20 left-1/4 w-72 h-72 bg-rose-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+      <div className="absolute top-20 right-1/4 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
 
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 text-rose-600 text-center tracking-tight drop-shadow-sm">
-          Period Tracker
-        </h1>
+      <div className="max-w-6xl mx-auto relative z-10">
+
+        <div className="text-center mb-16" data-aos="fade-down">
+          <h1 className="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-600 mb-4 drop-shadow-sm tracking-tight">
+            Cycle & Period Tracker
+          </h1>
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-medium leading-relaxed">
+            Log your cycle, predict your next period, and track your fertile window with ease.
+          </p>
+        </div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-8">
-          <div className="bg-white shadow-xl rounded-3xl p-6 border border-rose-100 hover:shadow-2xl transition-all">
-            <h2 className="text-xl font-semibold mb-4 text-rose-500">Add Period</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          
+          {/* Add Period Card */}
+          <div data-aos="fade-up" className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-br from-rose-400 to-pink-500 rounded-[2rem] transform rotate-1 group-hover:rotate-2 transition-transform duration-500 opacity-20"></div>
+            <div className="relative bg-white/70 backdrop-blur-xl border border-white/50 p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col">
+              <div className="flex items-center gap-3 mb-6">
+                <h2 className="text-2xl font-bold text-rose-600">Log Period</h2>
+              </div>
 
-            <label className="text-sm font-medium">Start Date</label>
-            <input type="date" value={dateInput} onChange={(e)=>setDateInput(e.target.value)} className="w-full mt-1 mb-3 p-2 border rounded-xl focus:ring-2 focus:ring-rose-300" />
-
-            <label className="text-sm font-medium">Length (days)</label>
-            <input type="number" value={lengthInput} onChange={(e)=>setLengthInput(e.target.value)} className="w-full mt-1 mb-3 p-2 border rounded-xl focus:ring-2 focus:ring-rose-300" />
-
-            <button onClick={addPeriod} className="w-full bg-rose-500 hover:bg-rose-600 text-white py-2 rounded-2xl shadow-md transition-all">
-              Add Entry
-            </button>
-          </div>
-
-          {/* Recorded Periods */}
-          <div className="bg-white shadow-xl rounded-3xl p-6 border border-rose-100 overflow-auto">
-            <h2 className="text-xl font-semibold mb-4 text-rose-500">History</h2>
-            <div className="space-y-3 max-h-64">
-              {periods.map((p,i)=>(
-                <div key={i} className="p-3 bg-rose-50 rounded-xl flex justify-between shadow-sm border border-rose-100">
-                  <div>
-                    <div className="font-medium">{p.start}</div>
-                    <div className="text-xs text-gray-600">{p.length} days</div>
-                  </div>
-                  <button onClick={()=>removeIndex(i)} className="text-rose-600 font-semibold">×</button>
+              <div className="flex-1 space-y-5">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Start Date</label>
+                  <input type="date" value={dateInput} onChange={(e)=>setDateInput(e.target.value)} className="w-full p-3 bg-white/50 border border-rose-200 rounded-xl focus:ring-4 focus:ring-rose-300/50 focus:border-rose-400 transition-all outline-none font-medium" />
                 </div>
-              ))}
-              {periods.length===0 && <div className="text-gray-500 text-sm">No entries yet</div>}
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Length (days)</label>
+                  <input type="number" value={lengthInput} onChange={(e)=>setLengthInput(e.target.value)} className="w-full p-3 bg-white/50 border border-rose-200 rounded-xl focus:ring-4 focus:ring-rose-300/50 focus:border-rose-400 transition-all outline-none font-medium" />
+                </div>
+              </div>
+
+              <button onClick={addPeriod} className="w-full mt-8 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-rose-500/30 transition-all active:scale-95 flex justify-center items-center gap-2">
+                Add Entry
+              </button>
             </div>
           </div>
 
-          {/* Prediction Box */}
-          <div className="bg-white shadow-xl rounded-3xl p-6 border border-rose-100">
-            <h2 className="text-xl font-semibold mb-4 text-rose-500">Predictions</h2>
-            {predicted ? (
-              <div className="space-y-2 text-sm">
-                <p><span className="font-semibold">Next Period:</span> {predicted}</p>
-                <p><span className="font-semibold">Ovulation:</span> {ovulation}</p>
-                <p><span className="font-semibold">Fertile Window:</span> {fertileStart} → {fertileEnd}</p>
-                <p><span className="font-semibold">Avg Cycle:</span> {avgCycle} days</p>
+          {/* Recorded Periods Card */}
+          <div data-aos="fade-up" data-aos-delay="100" className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-[2rem] transform -rotate-1 group-hover:-rotate-2 transition-transform duration-500 opacity-20"></div>
+            <div className="relative bg-white/70 backdrop-blur-xl border border-white/50 p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col">
+              <div className="flex items-center gap-3 mb-6">
+                <h2 className="text-2xl font-bold text-purple-600">Cycle History</h2>
               </div>
-            ) : (
-              <p className="text-gray-500 text-sm">Add at least 1 record</p>
-            )}
+              
+              <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar" style={{ maxHeight: "300px" }}>
+                {periods.length === 0 && (
+                  <div className="h-full flex flex-col items-center justify-center text-gray-400 py-10">
+                    <p className="font-medium text-sm">No entries recorded yet</p>
+                  </div>
+                )}
+                {periods.map((p,i)=>(
+                  <div key={i} className="group/item p-4 bg-white/60 hover:bg-white rounded-2xl flex justify-between items-center shadow-sm hover:shadow border border-purple-100/50 transition-all">
+                    <div>
+                      <div className="font-bold text-gray-800 text-lg">{p.start}</div>
+                      <div className="text-sm font-medium text-purple-600/80 bg-purple-100/50 px-2 py-0.5 rounded-md inline-block mt-1">
+                        {p.length} days
+                      </div>
+                    </div>
+                    <button onClick={()=>removeIndex(i)} title="Remove entry" className="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors">
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
+
+          {/* Prediction Box Card */}
+          <div data-aos="fade-up" data-aos-delay="200" className="relative group md:col-span-2 lg:col-span-1">
+            <div className="absolute inset-0 bg-gradient-to-br from-pink-400 to-red-500 rounded-[2rem] transform rotate-1 group-hover:rotate-2 transition-transform duration-500 opacity-20"></div>
+            <div className="relative bg-white/70 backdrop-blur-xl border border-white/50 p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col">
+              <div className="flex items-center gap-3 mb-6">
+                <h2 className="text-2xl font-bold text-pink-600">Predictions</h2>
+              </div>
+              
+              <div className="flex-1 flex flex-col justify-center">
+                {predicted ? (
+                  <div className="space-y-4">
+                    <div className="bg-gradient-to-r from-rose-100 to-pink-50 p-4 rounded-2xl border border-rose-200 shadow-sm flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-rose-800">Next Period</span>
+                      </div>
+                      <span className="font-extrabold text-rose-600 text-lg bg-white px-3 py-1 rounded-xl shadow-sm">{predicted}</span>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-purple-100 to-indigo-50 p-4 rounded-2xl border border-purple-200 shadow-sm flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-purple-800">Ovulation</span>
+                      </div>
+                      <span className="font-extrabold text-purple-600 text-lg bg-white px-3 py-1 rounded-xl shadow-sm">{ovulation}</span>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-green-100 to-emerald-50 p-4 rounded-2xl border border-green-200 shadow-sm flex flex-col gap-2">
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-green-800">Fertile Window</span>
+                      </div>
+                      <span className="font-extrabold text-green-700 text-center bg-white px-3 py-2 rounded-xl shadow-sm w-full">
+                        {fertileStart} <span className="text-gray-400 font-medium text-sm mx-1">to</span> {fertileEnd}
+                      </span>
+                    </div>
+
+                    <div className="pt-2 text-center">
+                      <span className="inline-block bg-gray-100 text-gray-600 text-sm font-bold px-4 py-1.5 rounded-full shadow-inner">
+                        Average Cycle: <span className="text-pink-600">{avgCycle} days</span>
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-gray-500 font-medium">Log at least 1 period to unlock personalized predictions.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>

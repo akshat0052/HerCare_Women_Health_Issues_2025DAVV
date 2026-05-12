@@ -160,6 +160,12 @@ export default function Chatbot() {
         signal: controller.signal
       });
 
+      if (res.status === 429) {
+        alert("Rate limit is over. Please wait a moment before trying again.");
+        setMessages((prev) => [...prev, { type: "ai", text: "Rate limit exceeded. Please try again later." }]);
+        return;
+      }
+
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error?.message || "API error");
 

@@ -1,18 +1,60 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext'
 
 export default function Loginpage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { login, googleLogin } = useContext(AuthContext);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+    try {
+      setIsSubmitting(true);
+      setError('');
+      await login(email, password);
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Login failed');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setIsSubmitting(true);
+      setError('');
+      await googleLogin();
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Google Login failed');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className='min-h-screen flex items-center justify-center px-4 py-20 pt-24 md:pt-28'>
       <div className='bg-white w-full max-w-sm md:max-w-md rounded-2xl shadow-xl p-6 md:p-8'>
         
         <h2 className='text-2xl md:text-3xl font-bold text-center text-pink-600 mb-6'>Welcome Back</h2>
         
-        <div className='space-y-4'>
+        <form onSubmit={handleSubmit} className='space-y-4'>
           <div>
             <label htmlFor="email" className='block text-gray-700 font-medium mb-1 text-sm md:text-base'>Email</label>
             <input 
               type="email" 
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder='Enter your email'
               className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-300 focus:outline-none focus:border-pink-400 transition text-sm md:text-base' 
             />
@@ -22,6 +64,9 @@ export default function Loginpage() {
             <label htmlFor="Password" className='block text-gray-700 font-medium mb-1 text-sm md:text-base'>Password</label>
             <input 
               type="password" 
+              id="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder='*********'
               className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-300 focus:outline-none focus:border-pink-400 transition text-sm md:text-base' 
             />
@@ -31,8 +76,10 @@ export default function Loginpage() {
             <a href="#" className='text-pink-600 hover:text-pink-700 text-sm'>Forgot password?</a>
           </div>
 
-          <button className='w-full py-2.5 md:py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-lg font-medium transition shadow-md text-sm md:text-base'>
-            Sign In
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+          <button disabled={isSubmitting} type="submit" className='w-full py-2.5 md:py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-lg font-medium transition shadow-md text-sm md:text-base'>
+            {isSubmitting ? 'Signing In...' : 'Sign In'}
           </button>
 
           <div className='relative my-4'>
@@ -44,7 +91,7 @@ export default function Loginpage() {
             </div>
           </div>
 
-          <button className='w-full py-2.5 md:py-3 flex justify-center items-center gap-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm md:text-base'>
+          <button type="button" onClick={handleGoogleLogin} className='w-full py-2.5 md:py-3 flex justify-center items-center gap-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm md:text-base'>
             <img 
               src="../assets/Google_logo-removebg-preview.png" 
               alt="Google"
@@ -59,7 +106,7 @@ export default function Loginpage() {
               Sign Up
             </Link>
           </p>
-        </div>
+        </form>
       </div>
     </div>
   )
