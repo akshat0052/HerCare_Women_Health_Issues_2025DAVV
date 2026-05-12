@@ -6,7 +6,7 @@ export const doctor = [
     experience: "10 years",
     location: "Bhopal",
     rating: 4.7,
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
+    image: "https://desunwebsite-assets.s3.ap-south-1.amazonaws.com/desunhospital-com/wp-content/uploads/2024/12/05224129/Dr-Sreya-Mallick.jpg",
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const doctor = [
     experience: "15 years",
     location: "Delhi",
     rating: 4.8,
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
+    image: "https://meridianhospitals.in/wp-content/uploads/2024/05/Dr-Abdul-Rahman.png",
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ export const doctor = [
     experience: "8 years",
     location: "Indore",
     rating: 4.5,
-    image: "https://randomuser.me/api/portraits/women/65.jpg",
+    image: "https://images.ctfassets.net/4mpdf15r5lc4/6sbpwej7TDvaCVbuOVCaiE/a0abb620c7a8d5480366a09401a89b85/Hospital_doctor.webp",
   },
   {
     id: 4,
@@ -33,7 +33,7 @@ export const doctor = [
     experience: "12 years",
     location: "Lucknow",
     rating: 4.3,
-    image: "https://randomuser.me/api/portraits/men/45.jpg",
+    image: "https://c8.alamy.com/comp/2GGD2HG/vertical-portrait-of-male-happy-indian-doctor-standing-in-clinic-hospital-2GGD2HG.jpg",
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ export const doctor = [
     experience: "9 years",
     location: "Mumbai",
     rating: 4.6,
-    image: "https://randomuser.me/api/portraits/women/50.jpg",
+    image: "https://www.maxathome.in/img/doctorVisitBG.png",
   },
   {
     id: 6,
@@ -51,25 +51,25 @@ export const doctor = [
     experience: "14 years",
     location: "Jaipur",
     rating: 4.7,
-    image: "https://randomuser.me/api/portraits/men/56.jpg",
+    image: "https://fordhospital.org/wp-content/uploads/2024/10/Dr.-BB-Bharti.png",
   },
   {
     id: 7,
-    name: "Dr. Kavita Mehta",
+    name: "Dr. Dropati Rathore",
     specialization: "Nutritionist",
     experience: "11 years",
     location: "Ahmedabad",
     rating: 4.4,
-    image: "https://randomuser.me/api/portraits/women/72.jpg",
+    image: "https://www.meitra.com/public/upload_file/65a68fca343fb1705414602.png",
   },
   {
     id: 8,
-    name: "Dr. Rohan Deshmukh",
+    name: "Dr. Mahendra yadav",
     specialization: "Psychiatrist",
     experience: "13 years",
     location: "Pune",
     rating: 4.6,
-    image: "https://randomuser.me/api/portraits/men/60.jpg",
+    image: "https://mehtahospital.com/wp-content/uploads/2024/09/dr.thangavelu-pediatric-department.webp",
   },
   {
     id: 9,
@@ -78,6 +78,6 @@ export const doctor = [
     experience: "10 years",
     location: "Varanasi",
     rating: 4.5,
-    image: "https://randomuser.me/api/portraits/women/68.jpg",
+    image: "https://thumbs.dreamstime.com/b/indian-beautiful-female-doctor-17989399.jpg",
   },
 ];

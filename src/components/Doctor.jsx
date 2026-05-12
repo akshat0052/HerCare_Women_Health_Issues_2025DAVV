@@ -63,7 +63,7 @@ export default function Doctors() {
   };
 
   return (
-    <div className="min-h-screen bg-pink-50 pt-24 pb-10 px-4">
+    <div className="min-h-screen bg-pink-50 pt-30 pb-10 px-4">
       <h1 className="text-3xl font-bold text-center text-pink-600 mb-2">
         👩‍⚕️ Our Doctors
       </h1>
@@ -81,7 +81,7 @@ export default function Doctors() {
             <img
               src={doc.image}
               alt={doc.name}
-              className="w-20 h-20 rounded-full object-cover border-4 border-pink-200 flex-shrink-0"
+              className="w-32 h-32 rounded-full object-cover border-4 border-pink-200 flex-shrink-0"
             />
             <div className="flex-1 min-w-0">
               <h2 className="text-base font-semibold text-pink-600 truncate">

@@ -186,7 +186,7 @@ export default function Chatbot() {
 
   /* =============== UI =============== */
   return (
-    <div className="min-h-screen pt-20 md:pt-24 pb-8 px-4">
+    <div className="min-h-screen pt-20 verflow-hidden md:pt-30 pb-8 px-4">
       <div className="flex flex-col bg-white rounded-2xl shadow-xl mx-auto max-w-3xl h-[70vh] md:h-[75vh]">
 
         {/* Header */}
