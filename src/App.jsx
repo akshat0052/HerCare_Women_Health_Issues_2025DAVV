@@ -11,6 +11,7 @@ import PeriodTracker from "./components/PeriodTracker";
 import { useEffect } from "react";
 import Doctors from "./components/Doctor";
 import Diet from "./components/Diet";
+import { AuthProvider } from "./context/AuthContext";
 
 
 function App() {
@@ -43,7 +44,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <AuthProvider>
       <Router>
         <Header />
         {/* Hidden Google Translate element - controlled by Header language button */}
@@ -61,7 +62,7 @@ function App() {
           <Route path="/detailpage/:slug" element={<DetailPage />} />
         </Routes>
       </Router>
-    </>
+    </AuthProvider>
   );
 }
 
