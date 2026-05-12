@@ -3,9 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import passport from 'passport';
 import rateLimit from 'express-rate-limit';
-import './config/passport.js';
 import authRoutes from './routes/auth.js';
 
 dotenv.config();
@@ -20,9 +18,6 @@ app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true
 }));
-
-// Initialize Passport
-app.use(passport.initialize());
 
 // Routes
 app.use('/api/auth', authRoutes);

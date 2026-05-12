@@ -1,7 +1,6 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import passport from 'passport';
 import User from '../models/User.js';
 import authMiddleware from '../middleware/auth.js';
 
@@ -127,42 +126,6 @@ router.post('/logout', (req, res) => {
     res.clearCookie('token');
     res.json({ message: 'Logged out successfully' });
 });
-
-// @route   GET api/auth/google
-// @desc    Auth with Google
-// @access  Public
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-// @route   GET api/auth/google/callback
-// @desc    Google auth callback
-// @access  Public
-router.get('/google/callback', 
-  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
-  (req, res) => {
-    // Successful authentication, generate token and set cookie
-    const payload = {
-        user: {
-            id: req.user.id
-        }
-    };
-
-    jwt.sign(
-        payload,
-        process.env.JWT_SECRET,
-        { expiresIn: '5d' },
-        (err, token) => {
-            if (err) throw err;
-            res.cookie('token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                maxAge: 5 * 24 * 60 * 60 * 1000 // 5 days
-            });
-            // Redirect back to frontend home
-            res.redirect(process.env.CLIENT_URL || 'http://localhost:5173');
-        }
-    );
-  }
-);
 
 // @route   POST api/auth/firebase-google
 // @desc    Auth with Firebase Google Sign-In
